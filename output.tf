@@ -1,3 +1,3 @@
-output "nat_gateway_ids" {
- value = module.vpc.natgw_ids
+output "roger_igw" {
+ value = aws_internet_gateway.roger_igw
 }
