@@ -8,3 +8,19 @@ output "vpc_id" {
 output "public_subnet_ids" {
   value = [aws_subnet.roger_public_subnet[0].id, aws_subnet.roger_public_subnet[1].id, aws_subnet.roger_public_subnet[2].id, aws_subnet.roger_public_subnet[3].id]
 }
+output "public_subnet_azs" {
+  value = [
+    aws_subnet.roger_public_subnet[0].availability_zone,
+    aws_subnet.roger_public_subnet[1].availability_zone,
+    aws_subnet.roger_public_subnet[2].availability_zone,
+    aws_subnet.roger_public_subnet[3].availability_zone,
+  ]
+}
+output "public_subnet_ids_and_azs" {
+  value = [
+    for subnet in aws_subnet.roger_public_subnet : {
+      id = subnet.id
+      az = subnet.availability_zone
+    }
+  ]
+}
