@@ -75,12 +75,12 @@ resource "aws_security_group" "roger_web_sg" {
 }
 
 
-#6 create key-pair, stored in config folder here:using var.tf 
+#5a create key-pair, stored in config folder here:using var.tf 
 # resource "aws_key_pair" "roger_kp" {
 #   key_name   = "roger_kp"
 #   public_key =  file(var.public_key_path) 
 # }
-#6 create key-pair, stored in config folder here:using locals{} #refactor to key-pair outside of tf
+#5b create key-pair, stored in config folder here:using locals{} #refactor to key-pair outside of tf
 # locals {
 #   public_key_files = tolist(fileset(path.module, "*.pub")) #convert fileset() to list
 # }
@@ -89,7 +89,7 @@ resource "aws_security_group" "roger_web_sg" {
 #   public_key = file(element(local.public_key_files, 0)) #element() access items by index
 # }
 
-#7 create EC2 roger_web
+#6 create EC2 roger_web
 resource "aws_instance" "roger_web" {
   count                  = var.settings.web_app.count
   ami                    = data.aws_ami.amazon_linux.id
@@ -102,7 +102,7 @@ resource "aws_instance" "roger_web" {
     Name = "roger_web_${count.index}"
   }
 }
-#8 Create a 1 GB EBS volume in the same AZ as the EC2 instance's subnet
+#7 Create a 1 GB EBS volume in the same AZ as the EC2 instance's subnet
 resource "aws_ebs_volume" "roger" {
   count = var.settings.web_app.count #Match the number of instances
   availability_zone = aws_instance.roger_web[count.index].availability_zone
@@ -111,14 +111,14 @@ resource "aws_ebs_volume" "roger" {
     Name = "roger_volume_${count.index}"
   }
 }
-#9 Attach the EBS volume to the EC2 instance
+#8 Attach the EBS volume to the EC2 instance
 resource "aws_volume_attachment" "roger" {
   count       = var.settings.web_app.count #Match the number of instances
   instance_id = aws_instance.roger_web[count.index].id
   volume_id   = aws_ebs_volume.roger[count.index].id #Reference to the EBS volume
   device_name = "/dev/sdf"  # Device name to attach the volume
 }
-#10 create elastic IP for EC2
+#9 create elastic IP for EC2
 resource "aws_eip" "roger_web_eip" {
   count    = var.settings.web_app.count #Creates multiple EIPs based on the count
   instance = aws_instance.roger_web[count.index].id #Associates the EIP with the EC2 instance
