@@ -6,5 +6,5 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = aws_subnet.roger_public_subnet.*.id
+  value = [aws_subnet.roger_public_subnet[0].id, aws_subnet.roger_public_subnet[1].id, aws_subnet.roger_public_subnet[2].id, aws_subnet.roger_public_subnet[3].id]
 }
