@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "roger_igw" {
 }
 #3 public subnet
 resource "aws_subnet" "roger_public_subnet" {
-  count             = var.subnet_count.public
+  count             = length(var.public_subnet_cidr) #length() returns the number of elements in a list
   vpc_id            = aws_vpc.roger_vpc.id
   cidr_block        = var.public_subnet_cidr[count.index]
   availability_zone = element(data.aws_availability_zones.available.names, count.index) #element() access items by index
